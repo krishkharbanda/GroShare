@@ -1,0 +1,342 @@
+"use client";
+
+import React from 'react';
+import {
+    Box,
+    Container,
+    Typography,
+    Grid,
+    Card,
+    CardContent,
+    Button,
+    IconButton,
+    Badge,
+    Chip,
+    AppBar,
+    Toolbar,
+} from '@mui/material';
+import {
+    LocalShipping as MapPin,
+    AccessTime as Clock,
+    Favorite as Heart,
+    ArrowForward as ArrowRight,
+    People as Users,
+    Event as Calendar,
+    LocalMall as ShoppingBag,
+    Notifications as Bell,
+} from '@mui/icons-material';
+
+const UserHomepage = () => {
+    const discountedItems = [
+        {
+            id: 1,
+            name: "Organic Bananas",
+            store: "ShopRite Central",
+            originalPrice: 3.99,
+            discountedPrice: 1.99,
+            expiryDate: "Tomorrow",
+            quantity: "5 bunches",
+            discount: 50
+        },
+        {
+            id: 2,
+            name: "Fresh Baked Bread",
+            store: "PriceRite Market",
+            originalPrice: 4.99,
+            discountedPrice: 2.49,
+            expiryDate: "Today",
+            quantity: "8 loaves",
+            discount: 50
+        },
+        {
+            id: 3,
+            name: "Yogurt Packs",
+            store: "The Fresh Grocer",
+            originalPrice: 5.99,
+            discountedPrice: 2.99,
+            expiryDate: "2 days",
+            quantity: "12 packs",
+            discount: 50
+        }
+    ];
+
+    const localShelters = [
+        {
+            id: 1,
+            name: "Hope Community Center",
+            distance: "0.8 miles",
+            needs: ["Canned Goods", "Fresh Produce"],
+            nextEvent: "Food Drive - Saturday 10 AM"
+        },
+        {
+            id: 2,
+            name: "City Food Bank",
+            distance: "1.2 miles",
+            needs: ["Dairy", "Proteins"],
+            nextEvent: "Volunteer Orientation - Sunday 2 PM"
+        }
+    ];
+
+    const communityEvents = [
+        {
+            id: 1,
+            title: "Weekend Food Drive",
+            date: "Sat, Feb 3",
+            location: "ShopRite Central",
+            participants: 45
+        },
+        {
+            id: 2,
+            title: "Cooking Workshop",
+            date: "Sun, Feb 4",
+            location: "Community Kitchen",
+            participants: 28
+        }
+    ];
+
+    return (
+        <Box sx={{ minHeight: '100vh', bgcolor: 'grey.50' }}>
+            <AppBar position="static" color="default" elevation={1}>
+                <Toolbar>
+                    <Box sx={{ flexGrow: 1 }}>
+                        <Typography variant="h5" fontWeight="bold">
+                            Welcome to SmartGrocery Relief
+                        </Typography>
+                        <Typography variant="subtitle1">
+                            Find deals, help your community
+                        </Typography>
+                    </Box>
+                    <IconButton>
+                        <Badge
+                            badgeContent={3}
+                            sx={{
+                                '& .MuiBadge-badge': {
+                                    bgcolor: '#dc2626',
+                                    color: 'white'
+                                }
+                            }}
+                        >
+                            <Bell />
+                        </Badge>
+                    </IconButton>
+                </Toolbar>
+            </AppBar>
+
+            <Container maxWidth="lg" sx={{ py: 4 }}>
+                {/* Featured Deals Section */}
+                <Box sx={{ mb: 6 }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+                        <Typography variant="h6" fontWeight="bold">
+                            Featured Deals Near You
+                        </Typography>
+                        <Button
+                            color="primary"
+                            endIcon={<ArrowRight />}
+                        >
+                            View all
+                        </Button>
+                    </Box>
+
+                    <Grid container spacing={3}>
+                        {discountedItems.map(item => (
+                            <Grid item xs={12} md={4} key={item.id}>
+                                <Card elevation={0} sx={{
+                                    '&:hover': {
+                                        boxShadow: 3,
+                                        transition: 'box-shadow 0.3s ease-in-out'
+                                    }
+                                }}>
+                                    <CardContent>
+                                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                                            <Box>
+                                                <Typography variant="h6">{item.name}</Typography>
+                                                <Typography variant="body2">
+                                                    {item.store}
+                                                </Typography>
+                                            </Box>
+                                            <Chip
+                                                label={`${item.discount}% OFF`}
+                                                sx={{
+                                                    bgcolor: '#dc2626',
+                                                    color: 'white'
+                                                }}
+                                                size="small"
+                                            />
+                                        </Box>
+
+                                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                                            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                                                <Typography>Original Price</Typography>
+                                                <Typography sx={{ textDecoration: 'line-through' }}>
+                                                    ${item.originalPrice}
+                                                </Typography>
+                                            </Box>
+                                            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                                                <Typography>Now</Typography>
+                                                <Typography sx={{ color: '#dc2626', fontWeight: 'bold' }}>
+                                                    ${item.discountedPrice}
+                                                </Typography>
+                                            </Box>
+                                            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                                                <Typography>Available</Typography>
+                                                <Typography>{item.quantity}</Typography>
+                                            </Box>
+                                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                                <Clock sx={{ fontSize: 'small', mr: 1 }} />
+                                                <Typography variant="body2">
+                                                    Expires: {item.expiryDate}
+                                                </Typography>
+                                            </Box>
+                                        </Box>
+
+                                        <Button
+                                            variant="contained"
+                                            fullWidth
+                                            sx={{
+                                                mt: 2,
+                                                bgcolor: '#dc2626',
+                                                '&:hover': {
+                                                    bgcolor: '#b91c1c'  // slightly darker shade for hover
+                                                }
+                                            }}
+                                        >
+                                            Reserve Item
+                                        </Button>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                        ))}
+                    </Grid>
+                </Box>
+
+                {/* Local Resources Section */}
+                <Box sx={{ mb: 6 }}>
+                    <Typography variant="h6" fontWeight="bold" sx={{ mb: 3 }}>
+                        Local Community Resources
+                    </Typography>
+
+                    <Grid container spacing={3}>
+                        {localShelters.map(shelter => (
+                            <Grid item xs={12} md={6} key={shelter.id}>
+                                <Card elevation={0}>
+                                    <CardContent>
+                                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                                            <Box>
+                                                <Typography variant="h6">{shelter.name}</Typography>
+                                                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                                    <MapPin sx={{ fontSize: 'small', mr: 1 }} />
+                                                    <Typography variant="body2">
+                                                        {shelter.distance}
+                                                    </Typography>
+                                                </Box>
+                                            </Box>
+                                            <IconButton sx={{ color: '#dc2626' }}>
+                                                <Heart />
+                                            </IconButton>
+                                        </Box>
+
+                                        <Box sx={{ mb: 2 }}>
+                                            <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                                                Current Needs:
+                                            </Typography>
+                                            <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                                                {shelter.needs.map(need => (
+                                                    <Chip
+                                                        key={need}
+                                                        label={need}
+                                                        variant="outlined"
+                                                        size="small"
+                                                    />
+                                                ))}
+                                            </Box>
+                                        </Box>
+
+                                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                                            <Calendar sx={{ fontSize: 'small', mr: 1 }} />
+                                            <Typography variant="body2">
+                                                {shelter.nextEvent}
+                                            </Typography>
+                                        </Box>
+
+                                        <Button
+                                            variant="outlined"
+                                            fullWidth
+                                            sx={{
+                                                borderColor: '#dc2626',
+                                                color: '#dc2626',
+                                                '&:hover': {
+                                                    borderColor: '#b91c1c',
+                                                    color: '#b91c1c',
+                                                    bgcolor: 'rgba(220, 38, 38, 0.04)' // very light red background on hover
+                                                }
+                                            }}
+                                        >
+                                            View Details
+                                        </Button>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                        ))}
+                    </Grid>
+                </Box>
+
+                {/* Community Events Section */}
+                <Box>
+                    <Typography variant="h6" fontWeight="bold" sx={{ mb: 3 }}>
+                        Upcoming Community Events
+                    </Typography>
+
+                    <Grid container spacing={3}>
+                        {communityEvents.map(event => (
+                            <Grid item xs={12} md={6} key={event.id}>
+                                <Card elevation={0}>
+                                    <CardContent>
+                                        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                                            <Box>
+                                                <Typography variant="h6">{event.title}</Typography>
+                                                <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
+                                                    <Calendar sx={{ fontSize: 'small', mr: 1 }} />
+                                                    <Typography variant="body2">
+                                                        {event.date}
+                                                    </Typography>
+                                                </Box>
+                                                <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
+                                                    <MapPin sx={{ fontSize: 'small', mr: 1 }} />
+                                                    <Typography variant="body2">
+                                                        {event.location}
+                                                    </Typography>
+                                                </Box>
+                                            </Box>
+                                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                                <Users sx={{ fontSize: 'small', mr: 1 }} />
+                                                <Typography variant="body2">
+                                                    {event.participants} joined
+                                                </Typography>
+                                            </Box>
+                                        </Box>
+
+                                        <Button
+                                            variant="contained"
+                                            fullWidth
+                                            sx={{
+                                                mt: 2,
+                                                bgcolor: '#dc2626',
+                                                '&:hover': {
+                                                    bgcolor: '#b91c1c'
+                                                }
+                                            }}
+                                        >
+                                            Join Event
+                                        </Button>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                        ))}
+                    </Grid>
+                </Box>
+            </Container>
+        </Box>
+    );
+};
+
+export default UserHomepage;
