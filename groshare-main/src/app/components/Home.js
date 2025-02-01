@@ -5,7 +5,7 @@ import {
     Box,
     Container,
     Typography,
-    Grid,
+    Grid2,
     Card,
     CardContent,
     Button,
@@ -25,6 +25,7 @@ import {
     LocalMall as ShoppingBag,
     Notifications as Bell,
 } from '@mui/icons-material';
+import theme from "@/app/components/theme";
 
 const UserHomepage = () => {
     const discountedItems = [
@@ -100,7 +101,7 @@ const UserHomepage = () => {
                 <Toolbar>
                     <Box sx={{ flexGrow: 1 }}>
                         <Typography variant="h5" fontWeight="bold">
-                            Welcome to SmartGrocery Relief
+                            Welcome to GroShare!
                         </Typography>
                         <Typography variant="subtitle1">
                             Find deals, help your community
@@ -111,7 +112,7 @@ const UserHomepage = () => {
                             badgeContent={3}
                             sx={{
                                 '& .MuiBadge-badge': {
-                                    bgcolor: '#dc2626',
+                                    bgcolor: theme.palette.primary.main,
                                     color: 'white'
                                 }
                             }}
@@ -126,20 +127,20 @@ const UserHomepage = () => {
                 {/* Featured Deals Section */}
                 <Box sx={{ mb: 6 }}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-                        <Typography variant="h6" fontWeight="bold">
+                        <Typography variant="h6" fontWeight="bold" color={theme.palette.primary.main} sx={{ mb: 1 }}>
                             Featured Deals Near You
                         </Typography>
                         <Button
-                            color="primary"
+                            color="error"
                             endIcon={<ArrowRight />}
                         >
                             View all
                         </Button>
                     </Box>
 
-                    <Grid container spacing={3}>
+                    <Grid2 container spacing={3}>
                         {discountedItems.map(item => (
-                            <Grid item xs={12} md={4} key={item.id}>
+                            <Grid2 item size={4} key={item.id}>
                                 <Card elevation={0} sx={{
                                     '&:hover': {
                                         boxShadow: 3,
@@ -157,7 +158,7 @@ const UserHomepage = () => {
                                             <Chip
                                                 label={`${item.discount}% OFF`}
                                                 sx={{
-                                                    bgcolor: '#dc2626',
+                                                    bgcolor: theme.palette.primary.main,
                                                     color: 'white'
                                                 }}
                                                 size="small"
@@ -173,7 +174,7 @@ const UserHomepage = () => {
                                             </Box>
                                             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                                                 <Typography>Now</Typography>
-                                                <Typography sx={{ color: '#dc2626', fontWeight: 'bold' }}>
+                                                <Typography sx={{ color: theme.palette.primary.main, fontWeight: 'bold' }}>
                                                     ${item.discountedPrice}
                                                 </Typography>
                                             </Box>
@@ -194,7 +195,7 @@ const UserHomepage = () => {
                                             fullWidth
                                             sx={{
                                                 mt: 2,
-                                                bgcolor: '#dc2626',
+                                                bgcolor: theme.palette.primary.main,
                                                 '&:hover': {
                                                     bgcolor: '#b91c1c'  // slightly darker shade for hover
                                                 }
@@ -204,20 +205,20 @@ const UserHomepage = () => {
                                         </Button>
                                     </CardContent>
                                 </Card>
-                            </Grid>
+                            </Grid2>
                         ))}
-                    </Grid>
+                    </Grid2>
                 </Box>
 
                 {/* Local Resources Section */}
                 <Box sx={{ mb: 6 }}>
-                    <Typography variant="h6" fontWeight="bold" sx={{ mb: 3 }}>
+                    <Typography variant="h6" fontWeight="bold" color={theme.palette.primary.main} sx={{ mb: 3 }}>
                         Local Community Resources
                     </Typography>
 
-                    <Grid container spacing={3}>
+                    <Grid2 container spacing={3}>
                         {localShelters.map(shelter => (
-                            <Grid item xs={12} md={6} key={shelter.id}>
+                            <Grid2 item size={6} key={shelter.id}>
                                 <Card elevation={0}>
                                     <CardContent>
                                         <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
@@ -230,7 +231,7 @@ const UserHomepage = () => {
                                                     </Typography>
                                                 </Box>
                                             </Box>
-                                            <IconButton sx={{ color: '#dc2626' }}>
+                                            <IconButton sx={{ color: theme.palette.primary.main }}>
                                                 <Heart />
                                             </IconButton>
                                         </Box>
@@ -262,8 +263,8 @@ const UserHomepage = () => {
                                             variant="outlined"
                                             fullWidth
                                             sx={{
-                                                borderColor: '#dc2626',
-                                                color: '#dc2626',
+                                                borderColor: theme.palette.primary.main,
+                                                color: theme.palette.primary.main,
                                                 '&:hover': {
                                                     borderColor: '#b91c1c',
                                                     color: '#b91c1c',
@@ -275,20 +276,20 @@ const UserHomepage = () => {
                                         </Button>
                                     </CardContent>
                                 </Card>
-                            </Grid>
+                            </Grid2>
                         ))}
-                    </Grid>
+                    </Grid2>
                 </Box>
 
                 {/* Community Events Section */}
                 <Box>
-                    <Typography variant="h6" fontWeight="bold" sx={{ mb: 3 }}>
+                    <Typography variant="h6" fontWeight="bold" color={theme.palette.primary.main} sx={{ mb: 3 }}>
                         Upcoming Community Events
                     </Typography>
 
-                    <Grid container spacing={3}>
+                    <Grid2 container spacing={3}>
                         {communityEvents.map(event => (
-                            <Grid item xs={12} md={6} key={event.id}>
+                            <Grid2 item size={6} key={event.id}>
                                 <Card elevation={0}>
                                     <CardContent>
                                         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -320,7 +321,7 @@ const UserHomepage = () => {
                                             fullWidth
                                             sx={{
                                                 mt: 2,
-                                                bgcolor: '#dc2626',
+                                                bgcolor: theme.palette.primary.main,
                                                 '&:hover': {
                                                     bgcolor: '#b91c1c'
                                                 }
@@ -330,9 +331,9 @@ const UserHomepage = () => {
                                         </Button>
                                     </CardContent>
                                 </Card>
-                            </Grid>
+                            </Grid2>
                         ))}
-                    </Grid>
+                    </Grid2>
                 </Box>
             </Container>
         </Box>
