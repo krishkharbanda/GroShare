@@ -36,6 +36,14 @@ export const requestPickup = async (pickupData) => {
     return await response.json();
 };
 
+export const generateRecipe = async (pickupData) => {
+    const response = await fetch(`${BASE_URL}/generate_recipe`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(pickupData),
+    });
+    return await response.json();
+};
 import { db } from "./firebase";
 import { collection, onSnapshot } from "firebase/firestore";
 

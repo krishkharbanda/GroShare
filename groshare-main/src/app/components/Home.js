@@ -259,7 +259,7 @@ const UserHomepage = () => {
                                                 '&:hover': {
                                                     borderColor: '#b91c1c',
                                                     color: '#b91c1c',
-                                                    bgcolor: 'rgba(220, 38, 38, 0.04)' // very light red background on hover
+                                                    bgcolor: 'rgba(220, 38, 38, 0.04)'
                                                 }
                                             }}
                                         >

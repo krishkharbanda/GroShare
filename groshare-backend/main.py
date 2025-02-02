@@ -2,7 +2,9 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from firebase_admin import credentials, initialize_app, firestore
 import googlemaps
-import openai
+from openai import OpenAI
+import json
+import re
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
@@ -12,8 +14,7 @@ initialize_app(cred)
 db = firestore.client()
 
 gmaps = googlemaps.Client(key='AIzaSyBPWZE-X9GVVvpv38dA9JSlsMvzwrmzCUc')
-openai.api_key = "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"
-
+client = OpenAI(api_key="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")
 
 @app.route('/add_donation', methods=['POST'])
 def add_donation():
@@ -73,6 +74,61 @@ def request_pickup():
 def send_notifications():
     data = request.json
     return jsonify({"message": "Notification sent successfully!"}), 200
+
+
+@app.route('/generate_recipe', methods=['POST'])
+
+@app.route('/generate_recipe', methods=['POST'])
+def generate_recipe():
+    data = request.json
+    ingredients = ", ".join([ingredient['name'] for ingredient in data.get('ingredients', [])])
+    servings = data.get('servings', 4)
+    dietary_preference = data.get('dietaryPreference', 'any')
+
+    prompt = f"""
+    Generate a structured recipe in JSON format using the following discounted ingredients: {ingredients}.
+    The recipe should serve {servings} people and adhere to a {dietary_preference} diet if applicable.
+
+    Format the JSON as follows:
+    {{
+        "name": "Recipe Name",
+        "cookingTime": "Cooking time in minutes",
+        "difficulty": "Difficulty level",
+        "ingredients": [
+            {{"name": "ingredient name", "quantity": "amount"}}
+        ],
+        "instructions": [
+            "Step 1",
+            "Step 2",
+            "Step 3"
+        ],
+        "nutritionInfo": {{
+            "calories": "xx kcal",
+            "protein": "xx g",
+            "carbs": "xx g",
+            "fat": "xx g"
+        }}
+    }}
+    
+    DO NOT OUTPUT ANYTHING OTHER THAN THE JSON!
+    """
+
+    chat_completion = client.chat.completions.create(
+        messages=[
+            {"role": "system", "content": "You are a professional chef."},
+            {"role": "user","content": prompt,}
+        ],
+        model="gpt-4o",
+    )
+
+    recipe_text = chat_completion.choices[0].message.content.strip()
+
+    cleaned_json_text = re.sub(r"```json|```", "", recipe_text).strip()
+
+    recipe_json = json.loads(cleaned_json_text)
+    print(recipe_json)
+
+    return jsonify(recipe_json), 200
 
 
 if __name__ == '__main__':
