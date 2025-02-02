@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react';
+import Link from 'next/link';
 import {
     Box,
     Container,
@@ -96,7 +97,7 @@ const UserHomepage = () => {
     ];
 
     return (
-        <Box sx={{ minHeight: '100vh', bgcolor: 'grey.50' }}>
+        <Box sx={{ minHeight: '100vh', bgcolor: 'grey.100' }}>
             <AppBar position="static" color="default" elevation={1}>
                 <Toolbar>
                     <Box sx={{ flexGrow: 1 }}>
@@ -130,12 +131,14 @@ const UserHomepage = () => {
                         <Typography variant="h6" fontWeight="bold" color={theme.palette.primary.main} sx={{ mb: 1 }}>
                             Featured Deals Near You
                         </Typography>
-                        <Button
-                            color="error"
-                            endIcon={<ArrowRight />}
-                        >
-                            View all
-                        </Button>
+                        <Link href="/recipebuilder" style={{ textDecoration: 'none' }}>
+                            <Button
+                                color="error"
+                                endIcon={<ArrowRight />}
+                            >
+                                View all
+                            </Button>
+                        </Link>
                     </Box>
 
                     <Grid2 container spacing={3}>
@@ -268,7 +271,7 @@ const UserHomepage = () => {
                                                 '&:hover': {
                                                     borderColor: '#b91c1c',
                                                     color: '#b91c1c',
-                                                    bgcolor: 'rgba(220, 38, 38, 0.04)' // very light red background on hover
+                                                    bgcolor: 'rgba(220, 38, 38, 0.04)'
                                                 }
                                             }}
                                         >
