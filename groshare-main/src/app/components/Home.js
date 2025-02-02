@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from 'next/link';
-import { fetchDonations } from "../utils/api";
+import { fetchDonations, subscribeToDonations } from "../utils/api";
 import {
     Box,
     Container,
@@ -30,10 +30,17 @@ import {
 import theme from "@/app/components/theme";
 import AddDonationView from "./AddDonationView";
 
-
 const UserHomepage = () => {
     const [donations, setDonations] = useState([]);
     const [openModal, setOpenModal] = useState(false);
+
+    useEffect(() => {
+        // Subscribe to Firestore updates
+        const unsubscribe = subscribeToDonations(setDonations);
+
+        // Unsubscribe when component unmounts
+        return () => unsubscribe();
+    }, []);
 
     useEffect(() => {
         async function loadData() {
@@ -83,7 +90,12 @@ const UserHomepage = () => {
                     <Typography variant="h5" fontWeight="bold" sx={{ flexGrow: 1 }}>
                         Welcome to GroShare!
                     </Typography>
-                    <Button variant="contained" color={theme.palette.primary.main} onClick={() => setOpenModal(true)}>
+                    <Button variant="contained" sx={{
+                        bgcolor: theme.palette.primary.main,
+                        '&:hover': {
+                            bgcolor: '#b91c1c'
+                        }
+                    }} onClick={() => setOpenModal(true)}>
                         + Add Donation
                     </Button>
                     <IconButton>
@@ -103,7 +115,6 @@ const UserHomepage = () => {
             </AppBar>
 
             <Container maxWidth="lg" sx={{ py: 4 }}>
-                {/* Featured Deals Section */}
                 <Box sx={{ mb: 6 }}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
                         <Typography variant="h6" fontWeight="bold" color={theme.palette.primary.main} sx={{ mb: 1 }}>
@@ -119,79 +130,78 @@ const UserHomepage = () => {
                         </Link>
                     </Box>
 
-                    <Grid2 container spacing={3}>
+                    <Box sx={{
+                        display: "flex",
+                        overflowX: "auto",
+                        scrollbarWidth: "thin",
+                        "&::-webkit-scrollbar": { height: 8 },
+                        "&::-webkit-scrollbar-thumb": { bgcolor: "lightgray", borderRadius: 4 },
+                        gap: 2,
+                        paddingBottom: 1
+                    }}>
                         {donations.map((item) => (
-                            <Grid2 item size={4} key={item.id}>
-                                <Card elevation={0} sx={{
-                                    '&:hover': {
-                                        boxShadow: 3,
-                                        transition: 'box-shadow 0.3s ease-in-out'
-                                    }
-                                }}>
-                                    <CardContent>
-                                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-                                            <Box>
-                                                <Typography variant="h6">{item.name}</Typography>
-                                                <Typography variant="body2">
-                                                    {item.store}
-                                                </Typography>
-                                            </Box>
-                                            <Chip
-                                                label={`${item.percentage}% OFF`}
-                                                sx={{
-                                                    bgcolor: theme.palette.primary.main,
-                                                    color: 'white'
-                                                }}
-                                                size="small"
-                                            />
+                            <Card key={item.id} elevation={0} sx={{
+                                minWidth: 370,
+                                flexShrink: 0,
+                                "&:hover": {
+                                    boxShadow: 3,
+                                    transition: "box-shadow 0.3s ease-in-out"
+                                }
+                            }}>
+                                <CardContent>
+                                    <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
+                                        <Box>
+                                            <Typography variant="h6">{item.name}</Typography>
+                                            <Typography variant="body2">{item.store}</Typography>
                                         </Box>
-
-                                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                                            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                                                <Typography>Original Price</Typography>
-                                                <Typography sx={{ textDecoration: 'line-through' }}>
-                                                    ${item.original_price}
-                                                </Typography>
-                                            </Box>
-                                            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                                                <Typography>Now</Typography>
-                                                <Typography sx={{ color: theme.palette.primary.main, fontWeight: 'bold' }}>
-                                                    ${item.discounted_price}
-                                                </Typography>
-                                            </Box>
-                                            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                                                <Typography>Available</Typography>
-                                                <Typography>{item.available}</Typography>
-                                            </Box>
-                                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                                <Clock sx={{ fontSize: 'small', mr: 1 }} />
-                                                <Typography variant="body2">
-                                                    Expires: {item.expiry_date}
-                                                </Typography>
-                                            </Box>
-                                        </Box>
-
-                                        <Button
-                                            variant="contained"
-                                            fullWidth
+                                        <Chip
+                                            label={`${((1 - item.discounted_price / item.original_price) * 100).toFixed(0)}% OFF`}
                                             sx={{
-                                                mt: 2,
                                                 bgcolor: theme.palette.primary.main,
-                                                '&:hover': {
-                                                    bgcolor: '#b91c1c'  // slightly darker shade for hover
-                                                }
+                                                color: "white"
                                             }}
-                                        >
-                                            Reserve Item
-                                        </Button>
-                                    </CardContent>
-                                </Card>
-                            </Grid2>
+                                            size="small"
+                                        />
+                                    </Box>
+
+                                    <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                                        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                                            <Typography>Original Price</Typography>
+                                            <Typography sx={{ textDecoration: "line-through" }}>
+                                                ${item.original_price}
+                                            </Typography>
+                                        </Box>
+                                        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                                            <Typography>Now</Typography>
+                                            <Typography sx={{ color: theme.palette.primary.main, fontWeight: "bold" }}>
+                                                ${item.discounted_price}
+                                            </Typography>
+                                        </Box>
+                                        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                                            <Typography>Available</Typography>
+                                            <Typography>{item.quantity}</Typography>
+                                        </Box>
+                                        <Box sx={{ display: "flex", alignItems: "center" }}>
+                                            <Clock sx={{ fontSize: "small", mr: 1 }} />
+                                            <Typography variant="body2">
+                                                Expires: {item.expiry_date}
+                                            </Typography>
+                                        </Box>
+                                    </Box>
+
+                                    <Button variant="contained" fullWidth sx={{
+                                        mt: 2,
+                                        bgcolor: theme.palette.primary.main,
+                                        "&:hover": { bgcolor: "#b91c1c" }
+                                    }}>
+                                        Reserve Item
+                                    </Button>
+                                </CardContent>
+                            </Card>
                         ))}
-                    </Grid2>
+                    </Box>
                 </Box>
 
-                {/* Local Resources Section */}
                 <Box sx={{ mb: 6 }}>
                     <Typography variant="h6" fontWeight="bold" color={theme.palette.primary.main} sx={{ mb: 3 }}>
                         Local Community Resources
@@ -262,7 +272,6 @@ const UserHomepage = () => {
                     </Grid2>
                 </Box>
 
-                {/* Community Events Section */}
                 <Box>
                     <Typography variant="h6" fontWeight="bold" color={theme.palette.primary.main} sx={{ mb: 3 }}>
                         Upcoming Community Events

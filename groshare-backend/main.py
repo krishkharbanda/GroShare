@@ -3,7 +3,6 @@ from flask_cors import CORS
 from firebase_admin import credentials, initialize_app, firestore
 import googlemaps
 import openai
-import datetime
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
@@ -16,20 +15,9 @@ gmaps = googlemaps.Client(key='AIzaSyBPWZE-X9GVVvpv38dA9JSlsMvzwrmzCUc')
 openai.api_key = "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"
 
 
-def calculate_discount(original_price, expiry_date):
-    days_left = (expiry_date - datetime.date.today()).days
-    if days_left <= 1:
-        return round(original_price * 0.5, 2)
-    elif days_left <= 3:
-        return round(original_price * 0.7, 2)
-    else:
-        return round(original_price * 0.9, 2)
-
-
 @app.route('/add_donation', methods=['POST'])
 def add_donation():
     data = request.json
-    data['discounted_price'] = calculate_discount(data['original_price'], datetime.datetime.strptime(data['expiry_date'], "%Y-%m-%d").date())
     db.collection('donations').add(data)
     return jsonify({"message": "Donation added successfully!"}), 200
 
@@ -38,7 +26,6 @@ def add_donation():
 def get_donations():
     donations = db.collection('donations').stream()
     result = [{**doc.to_dict(), "id": doc.id} for doc in donations]
-    print(result)
     return jsonify(result), 200
 
 

@@ -1,13 +1,12 @@
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { createTheme } from '@mui/material/styles';
 
-// Create a theme with Wakefern's colors
 const theme = createTheme({
     palette: {
         primary: {
-            main: '#dc2626', // Wakefern red
+            main: '#dc2626',
         },
         secondary: {
-            main: '#1f2937', // Dark gray
+            main: '#1f2937',
         }
     },
 });

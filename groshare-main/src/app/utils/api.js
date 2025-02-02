@@ -35,3 +35,18 @@ export const requestPickup = async (pickupData) => {
     });
     return await response.json();
 };
+
+import { db } from "./firebase";
+import { collection, onSnapshot } from "firebase/firestore";
+
+export const subscribeToDonations = (callback) => {
+    const donationsRef = collection(db, "donations");
+
+    return onSnapshot(donationsRef, (snapshot) => {
+        const donations = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+        callback(donations);
+    });
+};

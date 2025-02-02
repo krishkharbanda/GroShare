@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal, Box, Typography, TextField, Button } from "@mui/material";
 import { addDonation } from "../utils/api";
+import theme from "./theme";
+
 
 const AddDonationView = ({ open, handleClose }) => {
     const [formData, setFormData] = useState({
@@ -8,8 +10,35 @@ const AddDonationView = ({ open, handleClose }) => {
         store: "",
         original_price: "",
         expiry_date: "",
-        quantity: "",
+        available: "",
+        weight: "",
+        percentage: "",
+        discounted_price: "",
     });
+
+    const handleCloseModal = () => {
+        setFormData({
+            name: "",
+            store: "",
+            original_price: "",
+            expiry_date: "",
+            available: "",
+            weight: "",
+            percentage: "",
+            discounted_price: "",
+        });
+        handleClose(); // Close modal
+    };
+
+    useEffect(() => {
+        if (formData.percentage && formData.original_price) {
+            const discountValue = (formData.original_price * (formData.percentage / 100)).toFixed(2);
+            setFormData(prev => ({
+                ...prev,
+                discounted_price: (formData.original_price - discountValue).toFixed(2)
+            }));
+        }
+    }, [formData.percentage, formData.original_price]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -19,11 +48,11 @@ const AddDonationView = ({ open, handleClose }) => {
         e.preventDefault();
         const response = await addDonation(formData);
         console.log(response.message);
-        handleClose();
+        handleCloseModal();
     };
 
     return (
-        <Modal open={open} onClose={handleClose} aria-labelledby="add-donation-modal">
+        <Modal open={open} onClose={handleCloseModal} aria-labelledby="add-donation-modal">
             <Box
                 sx={{
                     position: "absolute",
@@ -37,7 +66,7 @@ const AddDonationView = ({ open, handleClose }) => {
                     borderRadius: 2
                 }}
             >
-                <Typography variant="h6" id="add-donation-modal" sx={{ mb: 2 }}>
+                <Typography variant="h6" color={theme.palette.primary.main} id="add-donation-modal" sx={{ mb: 2 }}>
                     Add New Donation
                 </Typography>
                 <form onSubmit={handleSubmit}>
@@ -47,6 +76,7 @@ const AddDonationView = ({ open, handleClose }) => {
                         name="name"
                         variant="outlined"
                         value={formData.name}
+                        color={theme.palette.primary.main}
                         onChange={handleChange}
                         required
                         sx={{ mb: 2 }}
@@ -57,6 +87,7 @@ const AddDonationView = ({ open, handleClose }) => {
                         name="store"
                         variant="outlined"
                         value={formData.store}
+                        color={theme.palette.primary.main}
                         onChange={handleChange}
                         required
                         sx={{ mb: 2 }}
@@ -68,17 +99,42 @@ const AddDonationView = ({ open, handleClose }) => {
                         variant="outlined"
                         type="number"
                         value={formData.original_price}
+                        color={theme.palette.primary.main}
                         onChange={handleChange}
                         required
                         sx={{ mb: 2 }}
                     />
                     <TextField
                         fullWidth
-                        label="Expiry Date"
+                        label="Discount (%)"
+                        name="percentage"
+                        variant="outlined"
+                        type="number"
+                        value={formData.percentage}
+                        color={theme.palette.primary.main}
+                        onChange={handleChange}
+                        required
+                        sx={{ mb: 2 }}
+                    />
+                    <TextField
+                        fullWidth
+                        label="Discounted Price ($)"
+                        name="discounted_price"
+                        variant="outlined"
+                        type="number"
+                        color={theme.palette.primary.main}
+                        value={formData.discounted_price}
+                        onChange={handleChange}
+                        required
+                        sx={{ mb: 2 }}
+                    />
+                    <TextField
+                        fullWidth
+                        label="Expiry Date (MM/DD/YY)"
                         name="expiry_date"
-                        type="date"
-                        InputLabelProps={{ shrink: true }}
+                        variant="outlined"
                         value={formData.expiry_date}
+                        color={theme.palette.primary.main}
                         onChange={handleChange}
                         required
                         sx={{ mb: 2 }}
@@ -86,14 +142,32 @@ const AddDonationView = ({ open, handleClose }) => {
                     <TextField
                         fullWidth
                         label="Quantity"
-                        name="quantity"
+                        name="available"
                         variant="outlined"
-                        value={formData.quantity}
+                        value={formData.available}
+                        color={theme.palette.primary.main}
                         onChange={handleChange}
                         required
                         sx={{ mb: 2 }}
                     />
-                    <Button type="submit" variant="contained" fullWidth sx={{ mt: 2 }}>
+                    <TextField
+                        fullWidth
+                        label="Weight (kg)"
+                        name="weight"
+                        variant="outlined"
+                        value={formData.weight}
+                        color={theme.palette.primary.main}
+                        onChange={handleChange}
+                        required
+                        sx={{ mb: 2 }}
+                    />
+                    <Button type="submit" variant="contained" fullWidth sx={{
+                        mt: 2,
+                        bgcolor: theme.palette.primary.main,
+                        '&:hover': {
+                            bgcolor: '#b91c1c'
+                        }
+                    }}>
                         Submit Donation
                     </Button>
                 </form>
