@@ -1,7 +1,8 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect, useState } from "react";
 import Link from 'next/link';
+import { fetchDonations } from "../utils/api";
 import {
     Box,
     Container,
@@ -27,40 +28,20 @@ import {
     Notifications as Bell,
 } from '@mui/icons-material';
 import theme from "@/app/components/theme";
+import AddDonationView from "./AddDonationView";
+
 
 const UserHomepage = () => {
-    const discountedItems = [
-        {
-            id: 1,
-            name: "Organic Bananas",
-            store: "ShopRite Central",
-            originalPrice: 3.99,
-            discountedPrice: 1.99,
-            expiryDate: "Tomorrow",
-            quantity: "5 bunches",
-            discount: 50
-        },
-        {
-            id: 2,
-            name: "Fresh Baked Bread",
-            store: "PriceRite Market",
-            originalPrice: 4.99,
-            discountedPrice: 2.49,
-            expiryDate: "Today",
-            quantity: "8 loaves",
-            discount: 50
-        },
-        {
-            id: 3,
-            name: "Yogurt Packs",
-            store: "The Fresh Grocer",
-            originalPrice: 5.99,
-            discountedPrice: 2.99,
-            expiryDate: "2 days",
-            quantity: "12 packs",
-            discount: 50
+    const [donations, setDonations] = useState([]);
+    const [openModal, setOpenModal] = useState(false);
+
+    useEffect(() => {
+        async function loadData() {
+            const data = await fetchDonations();
+            setDonations(data);
         }
-    ];
+        loadData();
+    }, []);
 
     const localShelters = [
         {
@@ -78,7 +59,6 @@ const UserHomepage = () => {
             nextEvent: "Volunteer Orientation - Sunday 2 PM"
         }
     ];
-
     const communityEvents = [
         {
             id: 1,
@@ -97,17 +77,15 @@ const UserHomepage = () => {
     ];
 
     return (
-        <Box sx={{ minHeight: '100vh', bgcolor: 'grey.100' }}>
+        <Box sx={{ minHeight: '100vh', bgcolor: 'grey.50' }}>
             <AppBar position="static" color="default" elevation={1}>
                 <Toolbar>
-                    <Box sx={{ flexGrow: 1 }}>
-                        <Typography variant="h5" fontWeight="bold">
-                            Welcome to GroShare!
-                        </Typography>
-                        <Typography variant="subtitle1">
-                            Find deals, help your community
-                        </Typography>
-                    </Box>
+                    <Typography variant="h5" fontWeight="bold" sx={{ flexGrow: 1 }}>
+                        Welcome to GroShare!
+                    </Typography>
+                    <Button variant="contained" color={theme.palette.primary.main} onClick={() => setOpenModal(true)}>
+                        + Add Donation
+                    </Button>
                     <IconButton>
                         <Badge
                             badgeContent={3}
@@ -136,13 +114,13 @@ const UserHomepage = () => {
                                 color="error"
                                 endIcon={<ArrowRight />}
                             >
-                                View all
+                                Recipe Builder
                             </Button>
                         </Link>
                     </Box>
 
                     <Grid2 container spacing={3}>
-                        {discountedItems.map(item => (
+                        {donations.map((item) => (
                             <Grid2 item size={4} key={item.id}>
                                 <Card elevation={0} sx={{
                                     '&:hover': {
@@ -159,7 +137,7 @@ const UserHomepage = () => {
                                                 </Typography>
                                             </Box>
                                             <Chip
-                                                label={`${item.discount}% OFF`}
+                                                label={`${item.percentage}% OFF`}
                                                 sx={{
                                                     bgcolor: theme.palette.primary.main,
                                                     color: 'white'
@@ -172,23 +150,23 @@ const UserHomepage = () => {
                                             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                                                 <Typography>Original Price</Typography>
                                                 <Typography sx={{ textDecoration: 'line-through' }}>
-                                                    ${item.originalPrice}
+                                                    ${item.original_price}
                                                 </Typography>
                                             </Box>
                                             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                                                 <Typography>Now</Typography>
                                                 <Typography sx={{ color: theme.palette.primary.main, fontWeight: 'bold' }}>
-                                                    ${item.discountedPrice}
+                                                    ${item.discounted_price}
                                                 </Typography>
                                             </Box>
                                             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                                                 <Typography>Available</Typography>
-                                                <Typography>{item.quantity}</Typography>
+                                                <Typography>{item.available}</Typography>
                                             </Box>
                                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                                 <Clock sx={{ fontSize: 'small', mr: 1 }} />
                                                 <Typography variant="body2">
-                                                    Expires: {item.expiryDate}
+                                                    Expires: {item.expiry_date}
                                                 </Typography>
                                             </Box>
                                         </Box>
@@ -271,7 +249,7 @@ const UserHomepage = () => {
                                                 '&:hover': {
                                                     borderColor: '#b91c1c',
                                                     color: '#b91c1c',
-                                                    bgcolor: 'rgba(220, 38, 38, 0.04)'
+                                                    bgcolor: 'rgba(220, 38, 38, 0.04)' // very light red background on hover
                                                 }
                                             }}
                                         >
@@ -338,6 +316,7 @@ const UserHomepage = () => {
                         ))}
                     </Grid2>
                 </Box>
+                <AddDonationView open={openModal} handleClose={() => setOpenModal(false)} />
             </Container>
         </Box>
     );
