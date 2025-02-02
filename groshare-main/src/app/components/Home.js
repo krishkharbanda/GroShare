@@ -155,7 +155,7 @@ const UserHomepage = () => {
                                             <Typography variant="body2">{item.store}</Typography>
                                         </Box>
                                         <Chip
-                                            label={`${((1 - item.discounted_price / item.original_price) * 100).toFixed(0)}% OFF`}
+                                            label={`${item.percentage}% OFF`}
                                             sx={{
                                                 bgcolor: theme.palette.primary.main,
                                                 color: "white"
@@ -179,7 +179,7 @@ const UserHomepage = () => {
                                         </Box>
                                         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                                             <Typography>Available</Typography>
-                                            <Typography>{item.quantity}</Typography>
+                                            <Typography>{item.available}</Typography>
                                         </Box>
                                         <Box sx={{ display: "flex", alignItems: "center" }}>
                                             <Clock sx={{ fontSize: "small", mr: 1 }} />
