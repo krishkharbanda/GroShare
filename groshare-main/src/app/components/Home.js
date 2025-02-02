@@ -16,6 +16,8 @@ import {
     Chip,
     AppBar,
     Toolbar,
+    Modal,
+    Paper,
 } from '@mui/material';
 import {
     LocalShipping as MapPin,
@@ -25,20 +27,49 @@ import {
     People as Users,
     Event as Calendar,
     LocalMall as ShoppingBag,
-    Notifications as Bell,
+    Notifications as Bell, Check,
 } from '@mui/icons-material';
 import theme from "@/app/components/theme";
-import AddDonationView from "./AddDonationView";
+import AddDonationView from "./AddDonationView"
 
 const UserHomepage = () => {
     const [donations, setDonations] = useState([]);
     const [openModal, setOpenModal] = useState(false);
+    const [selectedShelter, setSelectedShelter] = useState(null);
+    const [openShelterModal, setOpenShelterModal] = useState(false);
+
+    const ReserveButton = () => {
+        const [reserved, setReserved] = useState(false);
+
+        const handleClick = () => {
+            setReserved(!reserved);
+        };
+
+        return (
+            <Button variant="contained" onClick={handleClick} fullWidth sx={{
+                mt: 2,
+                bgcolor: reserved ? theme.palette.selected.main : theme.palette.primary.main,
+                color: reserved ? theme.palette.primary.main : theme.palette.selected.main,
+                "&:hover": { bgcolor: "#b91c1c" }
+            }}>
+                {reserved ? "Reserved!" : "Reserve Item"}
+            </Button>
+        );
+    };
+
+
+    const handleOpenShelterModal = (shelter) => {
+        setSelectedShelter(shelter);
+        setOpenShelterModal(true);
+    };
+
+    const handleCloseShelterModal = () => {
+        setSelectedShelter(null);
+        setOpenShelterModal(false);
+    };
 
     useEffect(() => {
-        // Subscribe to Firestore updates
         const unsubscribe = subscribeToDonations(setDonations);
-
-        // Unsubscribe when component unmounts
         return () => unsubscribe();
     }, []);
 
@@ -56,14 +87,16 @@ const UserHomepage = () => {
             name: "Hope Community Center",
             distance: "0.8 miles",
             needs: ["Canned Goods", "Fresh Produce"],
-            nextEvent: "Food Drive - Saturday 10 AM"
+            nextEvent: "Food Drive - Saturday 10 AM",
+            details: "Hope Community Center is a local support hub located just 0.8 miles away, dedicated to providing essential resources to those in need. They are currently seeking donations of canned goods and fresh produce to support their outreach efforts. Join them for their upcoming Food Drive this Saturday at 10 AM to make a difference in the community!"
         },
         {
             id: 2,
             name: "City Food Bank",
             distance: "1.2 miles",
             needs: ["Dairy", "Proteins"],
-            nextEvent: "Volunteer Orientation - Sunday 2 PM"
+            nextEvent: "Volunteer Orientation - Sunday 2 PM",
+            details: "City Food Bank, located 1.2 miles away, plays a vital role in combating food insecurity in the community. They are currently in need of dairy products and proteins to support their food distribution efforts. If you're looking to get involved, attend their upcoming Volunteer Orientation this Sunday at 2 PM to learn how you can make an impact!"
         }
     ];
     const communityEvents = [
@@ -188,14 +221,7 @@ const UserHomepage = () => {
                                             </Typography>
                                         </Box>
                                     </Box>
-
-                                    <Button variant="contained" fullWidth sx={{
-                                        mt: 2,
-                                        bgcolor: theme.palette.primary.main,
-                                        "&:hover": { bgcolor: "#b91c1c" }
-                                    }}>
-                                        Reserve Item
-                                    </Button>
+                                    <ReserveButton></ReserveButton>
                                 </CardContent>
                             </Card>
                         ))}
@@ -253,6 +279,7 @@ const UserHomepage = () => {
                                         <Button
                                             variant="outlined"
                                             fullWidth
+                                            onClick={() => handleOpenShelterModal(shelter)}
                                             sx={{
                                                 borderColor: theme.palette.primary.main,
                                                 color: theme.palette.primary.main,
@@ -326,6 +353,48 @@ const UserHomepage = () => {
                     </Grid2>
                 </Box>
                 <AddDonationView open={openModal} handleClose={() => setOpenModal(false)} />
+
+                <Modal open={openShelterModal} onClose={handleCloseShelterModal}>
+                    <Paper sx={{ width: 400, p: 4, m: 'auto', mt: 10, bgcolor: 'white', boxShadow: 24, borderRadius: 2 }}>
+                        {selectedShelter && (
+                            <>
+                                <Typography variant="h6" gutterBottom>
+                                    {selectedShelter.name}
+                                </Typography>
+                                <Typography variant="body2" color="text.secondary" gutterBottom>
+                                    Distance: {selectedShelter.distance}
+                                </Typography>
+
+                                <Typography variant="subtitle2" sx={{ mt: 2 }}>Current Needs:</Typography>
+                                <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mb: 2 }}>
+                                    {selectedShelter.needs.map((need, index) => (
+                                        <Chip key={index} label={need} variant="outlined" size="small" />
+                                    ))}
+                                </Box>
+
+                                <Typography variant="subtitle2">Next Event:</Typography>
+                                <Typography variant="body2" gutterBottom>
+                                    {selectedShelter.nextEvent}
+                                </Typography>
+
+                                <Typography variant="subtitle2">Details:</Typography>
+                                <Typography variant="body2" gutterBottom>
+                                    {selectedShelter.details}
+                                </Typography>
+
+                                <Button variant="contained" fullWidth onClick={handleCloseShelterModal} sx={{
+                                    mt: 2,
+                                    bgcolor: theme.palette.primary.main,
+                                    '&:hover': {
+                                        bgcolor: '#b91c1c'
+                                    }
+                                }}>
+                                    Close
+                                </Button>
+                            </>
+                        )}
+                    </Paper>
+                </Modal>
             </Container>
         </Box>
     );

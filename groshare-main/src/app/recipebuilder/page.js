@@ -119,7 +119,6 @@ const RecipeBuilder = () => {
 
             <Container maxWidth="lg" sx={{ py: 4 }}>
                 <Grid2 container spacing={4}>
-                    {/* Left Column - Ingredients Selection */}
                     <Grid2 item size={12} md={6}>
                         <Card elevation={0}>
                             <CardContent>
@@ -140,7 +139,7 @@ const RecipeBuilder = () => {
                                 />
 
 
-                                <Box sx={{ mb: 3 }}>
+                                <Box sx={{ mb: 3, maxHeight: '400px', overflowY: 'auto' }}>
                                     {filteredIngredients.map(ingredient => (
                                         <Card
                                             key={ingredient.id}
