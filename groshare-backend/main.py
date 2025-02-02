@@ -5,16 +5,20 @@ import googlemaps
 from openai import OpenAI
 import json
 import re
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
-cred = credentials.Certificate("firebase/credentials.json")
+cred = credentials.Certificate(os.getenv('FIREBASE_CREDENTIALS'))
 initialize_app(cred)
 db = firestore.client()
 
-gmaps = googlemaps.Client(key='AIzaSyBPWZE-X9GVVvpv38dA9JSlsMvzwrmzCUc')
-client = OpenAI(api_key="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")
+gmaps = googlemaps.Client(key=os.getenv('GOOGLE_MAPS_API_KEY'))
+client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
 @app.route('/add_donation', methods=['POST'])
 def add_donation():
